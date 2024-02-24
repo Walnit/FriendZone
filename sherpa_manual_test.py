@@ -5,7 +5,7 @@ try:
 except ImportError as e:
     print("Please install sounddevice first. You can use")
     print()
-    print("  pip install sounddevice")
+    print("pip install sounddevice")
     print()
     print("to install it")
     sys.exit(-1)
@@ -17,21 +17,22 @@ def create_recognizer():
     # Please replace the model files if needed.
     # See https://k2-fsa.github.io/sherpa/ncnn/pretrained_models/index.html
     # for download links.
+    model_type = 'bilingual'
+    model_version = 1
     recognizer = sherpa_ncnn.Recognizer(
-        tokens="./sherpa-ncnn-lstm-transducer-small-2023-02-13/tokens.txt",
-        encoder_param="./sherpa-ncnn-lstm-transducer-small-2023-02-13/encoder_jit_trace-pnnx.ncnn.param",
-        encoder_bin="./sherpa-ncnn-lstm-transducer-small-2023-02-13/encoder_jit_trace-pnnx.ncnn.bin",
-        decoder_param="./sherpa-ncnn-lstm-transducer-small-2023-02-13/decoder_jit_trace-pnnx.ncnn.param",
-        decoder_bin="./sherpa-ncnn-lstm-transducer-small-2023-02-13/decoder_jit_trace-pnnx.ncnn.bin",
-        joiner_param="./sherpa-ncnn-lstm-transducer-small-2023-02-13/joiner_jit_trace-pnnx.ncnn.param",
-        joiner_bin="./sherpa-ncnn-lstm-transducer-small-2023-02-13/joiner_jit_trace-pnnx.ncnn.bin",
+        tokens=f"./{model_type}-{model_version}/tokens.txt",
+        encoder_param=f"./{model_type}-{model_version}/encoder_jit_trace-pnnx.ncnn.param",
+        encoder_bin=f"./{model_type}-{model_version}/encoder_jit_trace-pnnx.ncnn.bin",
+        decoder_param=f"./{model_type}-{model_version}/decoder_jit_trace-pnnx.ncnn.param",
+        decoder_bin=f"./{model_type}-{model_version}/decoder_jit_trace-pnnx.ncnn.bin",
+        joiner_param=f"./{model_type}-{model_version}/joiner_jit_trace-pnnx.ncnn.param",
+        joiner_bin=f"./{model_type}-{model_version}/joiner_jit_trace-pnnx.ncnn.bin",
         num_threads=4,
     )
     return recognizer
 
 
 def main():
-    print("Started! Please speak")
     recognizer = create_recognizer()
     sample_rate = recognizer.sample_rate
     samples_per_read = int(0.1 * sample_rate)  # 0.1 second = 100 ms
@@ -39,6 +40,7 @@ def main():
     with sd.InputStream(
         channels=1, dtype="float32", samplerate=sample_rate
     ) as s:
+        print("Started! Please speak")
         while True:
             samples, _ = s.read(samples_per_read)  # a blocking read
             samples = samples.reshape(-1)
