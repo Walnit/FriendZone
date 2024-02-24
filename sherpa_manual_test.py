@@ -18,7 +18,7 @@ def askChatGPT(transcript: str):
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "Read the below transcript of a call. Check for any instance of a caller trying to make the other guess their identity."},
+            {"role": "system", "content": "Read the below transcript of a call. Check for any instance of a caller trying to make the other guess their identity. Strictly answer 'yes' if you think so, and 'no' otherwise"},
             {"role": "user", "content": transcript},
         ]
     )
