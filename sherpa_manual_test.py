@@ -11,6 +11,17 @@ except ImportError as e:
     sys.exit(-1)
 
 import sherpa_ncnn
+from openai import OpenAI
+client = OpenAI()
+
+def askChatGPT(transcript: str):
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "Read the below transcript of a call. Check for any instance of a caller trying to make the other guess their identity."},
+            {"role": "user", "content": transcript},
+        ]
+    )
 
 
 def create_recognizer():
