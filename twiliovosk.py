@@ -25,9 +25,9 @@ def call():
     start.stream(url=f'wss://{request.host}/stream')
     response.append(start)
     response.say('Please say your name')
+    # response.dial('65-8834-3074')
     response.pause(60)
     # response.gather(input='speech', action='/completed')
-    # response.dial('+6588343074')
     print(f'Incoming call from {request.form["From"]}')
     return str(response), 200, {'Content-Type': 'text/xml'}
 
