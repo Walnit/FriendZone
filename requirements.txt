@@ -1,0 +1,6 @@
+Flask
+Flask-sock
+twilio==8.13.0
+vosk==0.3.45
+openai==1.2.2
+pyngrok==7.1.2
