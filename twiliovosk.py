@@ -50,29 +50,28 @@ def askChatGPT(transcript: str):
         return False
 
 
+call_start = None
+
 @app.route('/call', methods=['POST'])
 def call():
+    global call_start
     """Accept a phone call."""
-    try:
-        print(f'Incoming call from {request.form["From"]}')
-    except:
-        print(f'error')
+    print(f'Incoming call from {request.form["From"]}')
+    call_start = datetime.now()
     response = VoiceResponse()
     start = Start()
     start.stream(url=f'wss://{request.host}/stream')
     response.append(start)
-    response.say('Please say your name')
-    # response.dial('65-8834-3074')
-    response.pause(58)
+    response.say('Please identify yourself')
+    response.pause(55)
     # response.gather(input='speech', action='/completed')
-    print(f'Incoming call from {request.form["From"]}')
     return str(response), 200, {'Content-Type': 'text/xml'}
 
 
 call_log = last_partial = ''
 @sock.route('/stream')
 def stream(ws):
-    global call_log, last_partial
+    global call_log, last_partial, call_start
     """Receive and transcribe audio stream."""
     rec = vosk.KaldiRecognizer(model, 16000)
     while True:
@@ -102,6 +101,7 @@ def stream(ws):
                         print('inprog:', callList)
                         for call in callList:
                             call.update(status='completed')
+                        break
                     except Exception as e:
                         print('error call list in-progress')
                         print(e)
